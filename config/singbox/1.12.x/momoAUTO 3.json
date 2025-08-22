@@ -375,13 +375,6 @@
         ]
       },
       {
-        "domain": [
-          "emby.cn2gias.uk",
-          "emby01.cn2gias.uk"
-        ],
-        "outbound": "🇺🇲 美国手动"
-      },
-      {
         "inbound": "dns-in",
         "action": "hijack-dns"
       },
