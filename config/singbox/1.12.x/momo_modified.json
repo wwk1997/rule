@@ -214,8 +214,8 @@
           ]
         }
       ],
-      "interval": "10m",
-      "tolerance": 100
+      "interval": "60s",
+      "tolerance": 50
     },
     {
       "tag": "🇯🇵 日本手动",
@@ -237,8 +237,8 @@
           ]
         }
       ],
-      "interval": "10m",
-      "tolerance": 100
+      "interval": "60s",
+      "tolerance": 50
     },
     {
       "tag": "🇸🇬 狮城手动",
@@ -260,8 +260,8 @@
           ]
         }
       ],
-      "interval": "10m",
-      "tolerance": 100
+      "interval": "60s",
+      "tolerance": 50
     },
     {
       "tag": "🇺🇲 美国手动",
