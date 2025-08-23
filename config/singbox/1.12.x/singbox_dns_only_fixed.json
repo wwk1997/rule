@@ -1,0 +1,94 @@
+
+{
+  "dns": {
+    "servers": [
+      {
+        "tag": "local",
+        "type": "udp",
+        "server": "202.102.224.68"
+      },
+      {
+        "tag": "local2",
+        "type": "udp",
+        "server": "202.102.227.68"
+      },
+      {
+        "tag": "public",
+        "type": "https",
+        "server": "dns.alidns.com",
+        "domain_resolver": "local"
+      },
+      {
+        "tag": "foreign",
+        "type": "https",
+        "server": "8.8.8.8",
+        "detour": "🚀 默认代理"
+      }
+    ],
+    "rules": [
+      {
+        "clash_mode": "direct",
+        "server": "local"
+      },
+      {
+        "clash_mode": "global",
+        "server": "fakeip"
+      },
+      {
+        "query_type": "HTTPS",
+        "action": "reject"
+      },
+      {
+        "rule_set": [
+          "geosite-cn",
+          "geosite-steamcn",
+          "geosite-apple"
+        ],
+        "server": "local"
+      }
+    ],
+    "final": "foreign",
+    "strategy": "ipv4_only",
+    "independent_cache": true,
+    "reverse_mapping": true
+  },
+  "outbounds": [
+    {
+      "tag": "🚀 默认代理",
+      "type": "selector",
+      "outbounds": [
+        "🇭🇰 香港自动",
+        "🇯🇵 日本自动",
+        "🇸🇬 狮城自动",
+        "🇺🇲 美国手动",
+        "🐸 手动选择",
+        "♻️ 自动选择"
+      ]
+    },
+    {
+      "tag": "🧠 AI",
+      "type": "selector",
+      "outbounds": [
+        "🇯🇵 日本自动",
+        "🇸🇬 狮城自动",
+        "🇺🇲 美国手动"
+      ]
+    }
+  ],
+  "route": {
+    "rules": [
+      {
+        "action": "sniff",
+        "sniffer": ["http","tls","quic","dns"]
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "tag": "dns-in",
+      "type": "direct",
+      "listen": "::",
+      "listen_port": 1053
+    }
+  ]
+}
