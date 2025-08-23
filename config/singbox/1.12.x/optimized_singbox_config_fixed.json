@@ -1,0 +1,318 @@
+
+{
+  "dns": {
+    "servers": [
+      {
+        "tag": "local",
+        "type": "udp",
+        "server": "202.102.224.68"
+      },
+      {
+        "tag": "local2",
+        "type": "udp",
+        "server": "202.102.227.68"
+      },
+      {
+        "tag": "backup",
+        "type": "https",
+        "server": "1.1.1.1",
+        "detour": "🚀 默认代理"
+      },
+      {
+        "tag": "public",
+        "type": "https",
+        "server": "dns.alidns.com",
+        "domain_resolver": "local"
+      },
+      {
+        "tag": "foreign",
+        "type": "https",
+        "server": "8.8.8.8",
+        "detour": "🚀 默认代理"
+      }
+    ],
+    "rules": [
+      {
+        "clash_mode": "direct",
+        "server": "local"
+      },
+      {
+        "clash_mode": "global",
+        "server": "fakeip"
+      },
+      {
+        "query_type": "HTTPS",
+        "action": "reject"
+      },
+      {
+        "rule_set": [
+          "geosite-cn",
+          "geosite-steamcn",
+          "geosite-apple"
+        ],
+        "server": "local"
+      }
+    ],
+    "final": "foreign",
+    "strategy": "ipv4_only",
+    "independent_cache": true,
+    "reverse_mapping": true
+  },
+  "outbounds": [
+    {
+      "tag": "🚀 默认代理",
+      "type": "selector",
+      "outbounds": [
+        "🇭🇰 香港自动",
+        "🇯🇵 日本自动",
+        "🇸🇬 狮城自动",
+        "🇺🇲 美国手动",
+        "🐸 手动选择",
+        "♻️ 自动选择"
+      ]
+    },
+    {
+      "tag": "🧠 AI",
+      "type": "selector",
+      "outbounds": [
+        "🇯🇵 日本自动",
+        "🇸🇬 狮城自动",
+        "🇺🇲 美国手动"
+      ]
+    },
+    {
+      "tag": "📹 YouTube",
+      "type": "selector",
+      "outbounds": [
+        "🚀 默认代理",
+        "♻️ 自动选择"
+      ]
+    },
+    {
+      "tag": "🍀 Google",
+      "type": "selector",
+      "outbounds": [
+        "🚀 默认代理",
+        "♻️ 自动选择"
+      ]
+    },
+    {
+      "tag": "♻️ 自动选择",
+      "type": "urltest",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "exclude",
+          "keywords": [
+            "官网|到期时间|剩余|流量|套餐|免费|订阅|全球直连|GB|Expire Date|Traffic|ExpireDate"
+          ]
+        }
+      ],
+      "interval": "600s",
+      "tolerance": 100
+    },
+    {
+      "tag": "🎯 全球直连",
+      "type": "direct",
+      "domain_strategy": "ipv4_only"
+    },
+    {
+      "tag": "🇭🇰 香港自动",
+      "type": "urltest",
+      "outbounds": ["{all}"],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": ["🇭🇰|HK|hk|香港|港|HongKong"]
+        },
+        {
+          "action": "exclude",
+          "keywords": ["免费","0.2","2.0"]
+        }
+      ],
+      "interval": "300s",
+      "tolerance": 50
+    },
+    {
+      "tag": "🇯🇵 日本自动",
+      "type": "urltest",
+      "outbounds": ["{all}"],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": ["🇯🇵|JP|jp|日本|日|Japan"]
+        },
+        {
+          "action": "exclude",
+          "keywords": ["免费","0.2","2.0"]
+        }
+      ],
+      "interval": "300s",
+      "tolerance": 50
+    },
+    {
+      "tag": "🇸🇬 狮城自动",
+      "type": "urltest",
+      "outbounds": ["{all}"],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": ["新加坡|坡|狮城|SG|Singapore"]
+        },
+        {
+          "action": "exclude",
+          "keywords": ["免费","0.2","2.0"]
+        }
+      ],
+      "interval": "300s",
+      "tolerance": 50
+    },
+    {
+      "tag": "🐸 手动选择",
+      "type": "selector",
+      "outbounds": ["{all}"],
+      "filter": [
+        {
+          "action": "exclude",
+          "keywords": [
+            "网站|流量|地址|剩余|过期|免费|时间|有效|Traffic|ExpireDate|GB|Expire Date"
+          ]
+        }
+      ]
+    }
+  ],
+  "route": {
+    "rules": [
+      {
+        "action": "sniff",
+        "sniffer": ["http","tls","quic","dns"]
+      },
+      {
+        "domain": ["emby.cn2gias.uk","emby01.cn2gias.uk"],
+        "outbound": "🇺🇲 美国手动"
+      },
+      {
+        "inbound": "dns-in",
+        "action": "hijack-dns"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "🎯 全球直连"
+      },
+      {
+        "clash_mode": "direct",
+        "outbound": "🎯 全球直连"
+      },
+      {
+        "rule_set": "geosite-steamcn",
+        "outbound": "🎯 全球直连"
+      },
+      {
+        "rule_set": "geosite-cn",
+        "outbound": "🎯 全球直连"
+      },
+      {
+        "rule_set": "geosite-ai",
+        "outbound": "🧠 AI"
+      },
+      {
+        "rule_set": "geosite-youtube",
+        "outbound": "📹 YouTube"
+      },
+      {
+        "rule_set": "geosite-google",
+        "outbound": "🍀 Google"
+      },
+      {
+        "rule_set": "geosite-github",
+        "outbound": "👨‍💻 Github"
+      },
+      {
+        "rule_set": "geosite-onedrive",
+        "outbound": "🐬 OneDrive"
+      },
+      {
+        "rule_set": "geosite-microsoft",
+        "outbound": "🪟 Microsoft"
+      },
+      {
+        "rule_set": "geosite-apple",
+        "outbound": "🍏 Apple"
+      },
+      {
+        "rule_set": "geosite-telegram",
+        "outbound": "📲 Telegram"
+      },
+      {
+        "rule_set": "geosite-tiktok",
+        "outbound": "🎵 TikTok"
+      },
+      {
+        "rule_set": "geosite-netflix",
+        "outbound": "🎥 Netflix"
+      },
+      {
+        "rule_set": "geosite-paypal",
+        "outbound": "💶 PayPal"
+      },
+      {
+        "rule_set": "geosite-steam",
+        "outbound": "🎮 Steam"
+      },
+      {
+        "rule_set": "geosite-!cn",
+        "outbound": "🚀 默认代理"
+      },
+      {
+        "clash_mode": "global",
+        "outbound": "GLOBAL"
+      }
+    ],
+    "final": "🐠 漏网之鱼",
+    "default_domain_resolver": {
+      "server": "public"
+    }
+  },
+  "inbounds": [
+    {
+      "tag": "dns-in",
+      "type": "direct",
+      "listen": "::",
+      "listen_port": 1053
+    },
+    {
+      "tag": "http-in",
+      "type": "http",
+      "listen": "::",
+      "listen_port": 8080
+    },
+    {
+      "tag": "socks-in",
+      "type": "socks",
+      "listen": "::",
+      "listen_port": 1080
+    },
+    {
+      "tag": "redirect-in",
+      "type": "redirect",
+      "listen": "::",
+      "listen_port": 7890
+    },
+    {
+      "tag": "tproxy-in",
+      "type": "tproxy",
+      "listen": "::",
+      "listen_port": 7891
+    },
+    {
+      "tag": "tun-in",
+      "type": "tun",
+      "interface_name": "momo",
+      "address": ["172.31.0.1/30","fdfe:dcba:9876::1/126"],
+      "auto_route": false,
+      "auto_redirect": false
+    }
+  ]
+}
