@@ -4,7 +4,7 @@
       {
         "tag": "local",
         "type": "udp",
-        "server": "223.5.5.5"
+        "server": "202.102.224.68"
       },
       {
         "tag": "public",
